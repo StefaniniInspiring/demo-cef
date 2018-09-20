@@ -9,4 +9,9 @@
 .col-list {
     overflow-y: scroll;
     height: calc(100vh - 44px);
+    background-color: var(--ion-color-light);
+}
+
+ion-list {
+    margin-bottom: 10px;
 }

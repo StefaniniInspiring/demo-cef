@@ -56,34 +56,16 @@ export class HomePage {
     }
 
     ngOnInit() {
-        const stompConfig: StompConfig = {
-            // Which server?
-            url: new SockJS('https://server.febrafar.hom.stefaniniinspiring.com.br/singleinstance/chat'),
-
-            // Headers
-            // Typical keys: login, passcode, host
+        const stompConfig = {
             headers: {
-                actorId: 'kFXrd-56-1537473112085',
-                requestId: 'kFXrd-56-1537473112085'
+                actorId: this.to,
+                requestId: this.to
             },
-
-            // How often to heartbeat?
-            // Interval in milliseconds, set to 0 to disable
-            heartbeat_in: 0, // Typical value 0 - disabled
-            heartbeat_out: 20000, // Typical value 20000 - every 20 seconds
-
-            // Wait in milliseconds before attempting auto reconnect
-            // Set to 0 to disable
-            // Typical value 5000 (5 seconds)
-            reconnect_delay: 5000,
-
-            // Will log diagnostics on console
-            debug: true
         };
 
         this.subscribed = false;
 
-        this._stompConfig.url = new SockJS('https://server.febrafar.hom.stefaniniinspiring.com.br/singleinstance/chat')
+        this._stompConfig.url = new SockJS(this.url)
         this._stompConfig.reconnect_delay = 5000;
         this._stompConfig.headers = stompConfig.headers;
         this._stompConfig.debug = false;
@@ -116,7 +98,7 @@ export class HomePage {
         }
 
         // Stream of messagesQueue
-        this.messagesQueue = this._stompService.subscribe('/topic/message.kFXrd-56-1537473112085');
+        this.messagesQueue = this._stompService.subscribe(`/topic/message.${this.to}`);
 
         // Subscribe a function to be run on_next message
         this.subscription = this.messagesQueue.subscribe(this.on_next);

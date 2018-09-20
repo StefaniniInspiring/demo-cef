@@ -55,8 +55,8 @@
 
       </ion-col>
       <ion-col size="6" class="col-list" id="list">
-        <ion-list>
-          <ion-item *ngFor="let message of mq">
+        <ion-list color="light" no-padding>
+          <ion-item *ngFor="let message of mq" color="light">
             <ion-label>
               <small>[{{message.timestamp | date:'HH:mm:ss.SSS '}}] - </small>
               <span>{{message.text}}</span>
