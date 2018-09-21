@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { RouterModule, RouteReuseStrategy, Routes } from '@angular/router';
+import { RouterModule, RouteReuseStrategy } from '@angular/router';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 
@@ -8,6 +8,12 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import {StompConfig, StompService} from '@stomp/ng2-stompjs';
 import * as SockJS from 'sockjs-client'
+
+import { environment } from '../environments/environment';
+export const firebaseConfig = environment.firebaseConfig;
+
+import { AngularFireModule } from 'angularfire2';
+import { AngularFirestoreModule } from 'angularfire2/firestore';
 
 const stompConfig: StompConfig = {
   url:  new SockJS(''),
@@ -22,13 +28,16 @@ const stompConfig: StompConfig = {
   declarations: [AppComponent],
   entryComponents: [],
   imports: [BrowserModule, 
+    AngularFireModule.initializeApp(firebaseConfig),
+    AngularFirestoreModule,
     IonicModule.forRoot(
       { 
         mode: 'ios',
         backButtonText: 'voltar'
       }
     ), 
-    AppRoutingModule],
+    AppRoutingModule,
+  ],
   providers: [
     StompService, {
       provide: StompConfig,
