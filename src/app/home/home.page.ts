@@ -111,6 +111,7 @@ export class HomePage {
         if (this.displayBlockMessages !== 0) {
             this.displayAvgMessages = Math.round((this.displayAvgMessages + this.displayBlockMessages) / 2);
         }
+        
     }
 
     public subscribe() {
