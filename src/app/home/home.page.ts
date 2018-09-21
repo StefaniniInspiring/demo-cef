@@ -162,7 +162,7 @@ export class HomePage {
         }
         this.lastMsg = msg;
 
-        if (this.mq.length > 300) {
+        if (this.mq.length > 100) {
             this.mq.shift();
         }
         this.mq.push(msg);
