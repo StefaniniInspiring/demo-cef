@@ -4,7 +4,8 @@ import { Message } from '@stomp/stompjs';
 import { Observable, Subscription } from 'rxjs';
 import { StompService, StompConfig } from '@stomp/ng2-stompjs';
 import { interval } from 'rxjs';
-import { switchMap, map } from 'rxjs/operators';
+import { AngularFirestore } from '@angular/fire/firestore/firestore';
+import { AngularFirestoreDocument } from '@angular/fire/firestore';
 
 @Component({
     selector: 'app-home',
@@ -26,6 +27,7 @@ export class HomePage {
     debug: Boolean = true;
     // Stream of messagesQueue
     list;
+
     private subscription: Subscription;
     public messagesQueue: Observable<Message>;
 
@@ -47,15 +49,32 @@ export class HomePage {
 
     recording: Boolean = true;
     sub;
+    lastMsg = {
+        timestamp: 0
+    };
+    config: AngularFirestoreDocument<any>;
 
     constructor(
         private _stompService: StompService,
-        private _stompConfig: StompConfig
+        private _stompConfig: StompConfig,
+        private afs: AngularFirestore
     ) {
 
     }
 
     ngOnInit() {
+        this.config = this.afs.doc('config/configs');
+
+        this.config.snapshotChanges().forEach(
+            config => {
+                this.url = config.payload.data().url;
+                this.to = config.payload.data().userId;
+                this.connect();
+            });
+
+    }
+
+    connect() {
         const stompConfig = {
             headers: {
                 actorId: this.to,
@@ -77,18 +96,19 @@ export class HomePage {
         this.list = document.getElementById('list');
 
         const source = interval(this.blockSize * 1000);
-        this.sub = source.subscribe(val => this.updateMetrics());
-
+        this.sub = source.subscribe(() => this.updateMetrics());
     }
 
     updateMetrics() {
         this.blocks++;
-        
+
         this.displayBlockMessages = this.blockMessages;
         if (this.displayBestMessages < this.displayBlockMessages) {
             this.displayBestMessages = this.displayBlockMessages;
         }
         this.blockMessages = 0;
+
+        this.displayAvgMessages = Math.round((this.displayAvgMessages + this.displayBlockMessages) / 2);
         console.log('updaing');
     }
 
@@ -132,14 +152,14 @@ export class HomePage {
 
         let msg = JSON.parse(message.body);
 
-        let diff = msg.timestamp - this.lastBlockTimestamp;
         this.blockMessages++;
-        //FIRST CASE
-        console.log('diff: ' + diff);
-        if (diff = msg.timestamp || diff > 1000) {
-            this.lastBlockTimestamp = msg.timestamp;
-            
+
+        console.log(this.lastMsg);
+        if (this.lastMsg.timestamp !== 0) {
+            let diff = msg.timestamp - this.lastMsg.timestamp;
+            msg.diff = diff;
         }
+        this.lastMsg = msg;
 
         if (this.mq.length > 200) {
             this.mq.splice(-1, 1);

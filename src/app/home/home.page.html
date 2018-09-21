@@ -46,7 +46,7 @@
         <ion-row padding>
           <ion-col offset="1" size="10" padding>
             <ion-item color="tertiary">
-              <ion-badge slot="end">11</ion-badge>
+              <ion-badge slot="end">{{displayAvgMessages * (60 / blockSize)}}</ion-badge>
               <ion-label>Mensagens por minuto (média)</ion-label>
               <ion-icon size="large" name="analytics"  mode="md" slot="start" color="light"></ion-icon>
             </ion-item>
@@ -60,7 +60,7 @@
             <ion-label>
               <small>[{{message.timestamp | date:'HH:mm:ss.SSS '}}] - </small>
               <span>{{message.text}}</span>
-              <p>KAKA</p>
+              <p><small>{{message.diff}} ms</small></p>
             </ion-label>
           </ion-item>
         </ion-list>
