@@ -162,8 +162,8 @@ export class HomePage {
         }
         this.lastMsg = msg;
 
-        if (this.mq.length > 200) {
-            this.mq.splice(-1, 1);
+        if (this.mq.length > 300) {
+            this.mq.shift();
         }
         this.mq.push(msg);
         setTimeout(() => {
