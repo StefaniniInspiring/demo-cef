@@ -108,8 +108,9 @@ export class HomePage {
         }
         this.blockMessages = 0;
 
-        this.displayAvgMessages = Math.round((this.displayAvgMessages + this.displayBlockMessages) / 2);
-        console.log('updaing');
+        if (this.displayBlockMessages !== 0) {
+            this.displayAvgMessages = Math.round((this.displayAvgMessages + this.displayBlockMessages) / 2);
+        }
     }
 
     public subscribe() {
@@ -154,7 +155,6 @@ export class HomePage {
 
         this.blockMessages++;
 
-        console.log(this.lastMsg);
         if (this.lastMsg.timestamp !== 0) {
             let diff = msg.timestamp - this.lastMsg.timestamp;
             msg.diff = diff;
